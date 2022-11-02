@@ -24,5 +24,15 @@ jobs:
       - name: upload linux artifact
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh release upload ${{ env.RELEASE_VERSION }} docker-compose/docker-compose-ce.yaml docker-compose/docker-compose-pro.yaml docker-compose/docker-compose-dev.yml
+        run: -|
+          sha512sum docker-compose/docker-compose-ce.yaml | awk '{print $1}' > docker-compose-ce.shasum
+          sha512sum docker-compose/docker-compose-pro.yaml | awk '{print $1}' > docker-compose-pro.shasum
+          sha512sum docker-compose/docker-compose-dev.yaml | awk '{print $1}' > docker-compose-dev.shasum
+          gh release upload ${{ env.RELEASE_VERSION }} \
+                docker-compose/docker-compose-ce.yaml \
+                docker-compose/docker-compose-pro.yaml \
+                docker-compose/docker-compose-dev.yml \
+                docker-compose-ce.shasum \
+                docker-compose-pro.shasum \
+                docker-compose-dev.shasum
 
