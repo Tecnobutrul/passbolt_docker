@@ -25,7 +25,7 @@ jobs:
         run: -|
           sha512sum docker-compose/docker-compose-ce.yaml | awk '{print $1}' > docker-compose-ce.shasum &&
           sha512sum docker-compose/docker-compose-pro.yaml | awk '{print $1}' > docker-compose-pro.shasum &&
-          sha512sum docker-compose/docker-compose-dev.yaml | awk '{print $1}' > docker-compose-dev.shasum
+          sha512sum docker-compose/docker-compose-dev.yml | awk '{print $1}' > docker-compose-dev.shasum
       - name: Upload release artifacts
         env:
           GITHUB_TOKEN: ${{ github.token }}
