@@ -20,11 +20,7 @@ jobs:
           draft: false
           prerelease: false
       - name: upload linux artifact
-        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./docker-compose/docker-compose-ce.yaml
-          asset_name: docker-compose-ce.yaml
-          asset_content_type: text/plain
+        run: gh release upload ${{ github.ref }} docker-compose/docker-compose-ce.yaml docker-compose/docker-compose-pro.yaml docker-compose/docker-compose-dev.yml
+
