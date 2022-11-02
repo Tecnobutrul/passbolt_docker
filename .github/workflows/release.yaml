@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -22,5 +24,5 @@ jobs:
       - name: upload linux artifact
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh release upload ${{ github.ref }} docker-compose/docker-compose-ce.yaml docker-compose/docker-compose-pro.yaml docker-compose/docker-compose-dev.yml
+        run: gh release upload ${{ env.RELEASE_VERSION }} docker-compose/docker-compose-ce.yaml docker-compose/docker-compose-pro.yaml docker-compose/docker-compose-dev.yml
 
