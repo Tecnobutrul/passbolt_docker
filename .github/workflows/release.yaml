@@ -3,38 +3,17 @@ on:
     tags:
       - '*'
 jobs:
-  build:
-    name: Upload Release Asset
+  create-shasums:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - run: |
+          cd docker-compose
+          sha512sum docker-compose-ce.yaml | awk '{print $1}' > docker-compose-ce-SHASUM.txt &&
+          sha512sum docker-compose-pro.yaml | awk '{print $1}' > docker-compose-pro-SHASUM.txt &&
+          sha512sum docker-compose-dev.yml | awk '{print $1}' > docker-compose-dev-SHASUM.txt
+      - uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: create shasum files
-        run: -|
-          sha512sum docker-compose/docker-compose-ce.yaml | awk '{print $1}' > docker-compose-ce.shasum &&
-          sha512sum docker-compose/docker-compose-pro.yaml | awk '{print $1}' > docker-compose-pro.shasum &&
-          sha512sum docker-compose/docker-compose-dev.yml | awk '{print $1}' > docker-compose-dev.shasum
-      - name: Upload release artifacts
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: >-
-          gh release upload ${{ env.RELEASE_VERSION }} \
-                docker-compose/docker-compose-ce.yaml \
-                docker-compose/docker-compose-pro.yaml \
-                docker-compose/docker-compose-dev.yml \
-                docker-compose-ce.shasum \
-                docker-compose-pro.shasum \
-                docker-compose-dev.shasum
-
+          artifacts: "docker-commpose/docker-compose-*.yaml, docker-compose/*SHA512SUM.txt"
