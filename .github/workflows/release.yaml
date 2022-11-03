@@ -17,4 +17,4 @@ jobs:
           sha512sum docker-compose-ce-postgresql.yml | awk '{print $1}' > docker-compose-ce-postgresql-SHASUM.txt
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "./docker-commpose/docker-compose-*.yaml, ./docker-compose/*SHA512SUM.txt"
+          artifacts: "docker-compose/docker-compose-*.y?ml, docker-compose/*SHA512SUM.txt"
