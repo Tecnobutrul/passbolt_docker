@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-      - '*'
+      - "*"
 jobs:
   create-shasums:
     runs-on: ubuntu-latest
@@ -18,3 +18,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "docker-compose/docker-compose-*.yaml, docker-compose/*SHA512SUM.txt"
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        name: Create Release
+        run: gh release create "${GITHUB_REF#refs/*/}" -t "${GITHUB_REF#refs/*/}" --notes-file RELEASE_NOTES.md
